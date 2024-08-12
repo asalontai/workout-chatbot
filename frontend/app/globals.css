@@ -1,0 +1,42 @@
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  user-select: none;
+}
+body {
+  background: #1a1a1a;
+}
+
+body br {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.custom-link {
+  color: #007BFF; 
+  text-decoration: none; 
+  transition: color 0.3s, text-decoration 0.3s; 
+}
+
+.custom-link:hover {
+  color: #66B2FF;
+  text-decoration: underline; 
+}
+
+.camera {
+  height: 20px;
+  width: 30px;
+}
+
+.logoNavbar {
+  border: 1px solid white;
+}
+
+.label {
+  color: #008080;
+}
+
+.pointer {
+  cursor: pointer;
+}
