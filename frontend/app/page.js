@@ -7,7 +7,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '@/firebase';
 import Image from 'next/image';
 import Footer from './components/Footer'; // Import Footer component
-import NavbarLanding from './components/NavBarLanding';
+import NavbarLanding from './components/Navbar';
 import { FitnessCenter, HelpCenter, Restaurant } from '@mui/icons-material';
 
 export default function LandingPage() {
@@ -46,7 +46,7 @@ export default function LandingPage() {
 
   return (
     <div>
-      <NavbarLanding show={showNavbar} />
+      <NavbarLanding show={showNavbar} handleFeatures={handleLearnMoreClick} handlePricing={handleLearnMoreClick} />
       <Box
         sx={{
           position: 'relative',

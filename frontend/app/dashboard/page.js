@@ -1,19 +1,32 @@
 "use client"
 
-import React, { useState, useEffect, } from 'react';
+import React, { useState, useEffect, useRef, } from 'react';
 import { auth } from "@/firebase";
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, Stack, TextField, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { marked } from 'marked';
-import Navbar from '../components/Navbar';
-import FacebookCircularProgress from '../components/FacebookCircularProgress';
 import Footer from '../components/Footer';
+import Navbar from '../components/Navbar';
+import Image from 'next/image';
+import Icon from "../icon.ico"
+import Logo from "../../public/Logo.png"
+import defaultProfile from "../../public/DefaultProfile.jpg"
+import { BouncingDots } from '../components/bouncingDots';
 
-export default function Home() {
+export default function Dashboard() {
   const [user, loading] = useAuthState(auth);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+
+  const messagesEndRef = useRef(null);
+  const typingTimeoutRef = useRef(null);
+
+  const [isTyping, setIsTyping] = useState(false);
+
+  const [messages, setMessages] = useState([])
+
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     if (!loading && !user) {
@@ -21,19 +34,55 @@ export default function Home() {
     }
   }, [loading, user, router]);
 
-  const [messages, setMessages] = useState([{
-    role: 'assistant',
-    content: `
+  useEffect(() => {
+    if (messages.length === 0) {
+      const initialMessage = `
         <p>Hello!</p>
         <p>I'm your dedicated fitness coach, here to help you crush your fitness goals.</p>
         <p>Whether you're looking for workout tips, diet advice, or just some motivation, I'm here to guide you.</p>
         <p>How can we kickstart your fitness journey today?</p>
-      `,
-  }]);
+      `;
+      setIsTyping(true);
+      typeMessage(initialMessage, 'assistant');
+    }
+  }, [messages]);
 
   console.log(messages);
 
-  const [message, setMessage] = useState('');
+  useEffect(() => {
+    messagesEndRef.current.scrollIntoView({ behavior: "smooth"})
+  }, [messages])
+
+  const typeMessage = (messageContent, role) => {
+    let index = 0;
+    const speed = 0;
+    let typedMessage = '';
+
+    function type() {
+      if (index < messageContent.length) {
+        typedMessage += messageContent.charAt(index);
+        setMessages((prevMessages) => {
+          const newMessages = [...prevMessages];
+          if (newMessages.length > 0) {
+            newMessages[newMessages.length - 1] = {
+              ...newMessages[newMessages.length - 1],
+              content: typedMessage,
+            };
+          }
+          return newMessages;
+        });
+        index++;
+        typingTimeoutRef.current = setTimeout(type, speed);
+      } else {
+        setIsTyping(false);
+      }
+    }
+
+    if (role === 'assistant') {
+      setMessages([{ role, content: '' }]);
+    }
+    type();
+  };
 
   const handleKeyDown = (event) => {
     if (event.key === 'Enter' && !event.shiftKey) {
@@ -113,21 +162,21 @@ export default function Home() {
       flexDirection="column"
       minHeight="100vh"
     >
-      <Navbar />
+      <Navbar show={true} />
       <Box 
         width={"100vw"}
         display="flex"
         flexDirection={"column"}
         justifyContent={"center"}
         alignItems={"center"}
-        marginTop={4}
+        marginTop={12}
       >
         <Stack
           direction={"column"}
           width={"1000px"}
           height={"670px"}
           spacing={3}
-          bgcolor={"#212122"}
+          bgcolor={"white"}
           color={"white"}
           borderRadius={"8px 8px 8px 8px"}
           sx={{
@@ -135,16 +184,14 @@ export default function Home() {
           }}
         >
           <Box
-            height={"60px"}
+            height={"65px"}
             display={"flex"}
             alignItems={"center"}
-            bgcolor={"#007BFF"}
             justifyContent={"center"}
             borderRadius={"6px 6px 0 0"}
+            bgcolor="#2D2D2D"
           >
-            <Typography variant='h4' sx={{ fontWeight: "bold" }}>
-              WorkoutAI Bot
-            </Typography>
+            <Image src={Logo} width={300} alt='' />
           </Box>
           <Stack
             direction={"column"}
@@ -166,47 +213,62 @@ export default function Home() {
                   msg.role === 'assistant' ? 'flex-start' : 'flex-end'
                 }>
                   <Box
-                    bgcolor={
-                      msg.role === 'assistant' ? '#007BFF' : '#5A9BD4'
-                    }
-                    color={"white"}
-                    borderRadius={6}
-                    maxWidth={"575px"}
-                    p={2}
-                    marginRight={"25px"}
-                    marginLeft={"25px"}
-                    sx={{
-                      '& ol': {
-                        marginLeft: '5px',
-                        marginTop: '10px',
-                        marginBottom: '10px'
-                      },
-                      '& li': {
-                        marginBottom: '10px',
-                        marginTop: '10px',
-                        marginLeft: "28px"
-                      },
-                      '& p': {
-                        marginBottom: '10px',
-                        marginTop: '10px',
-                        marginLeft: "10px",
-                      },
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'flex-start',
-                    }}
+                    display={"flex"}
+                    alignItems={"flex-start"}
+                    gap={1}
+                    mt={1}
                   >
-                    {index === messages.length - 1 && isLoading ? (
-                      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-                        <FacebookCircularProgress />
-                      </Box>
+                    {msg.role === 'assistant' ? (
+                      <Image src={Icon} width={40} height={40} alt='Chatbot Icon' style={{ borderRadius: '100%', marginLeft: 10, marginRight: "-20px", marginTop: 15, border: "2px solid black" }} />
                     ) : (
-                      <Box sx={{ '& br': { marginTop: "10px", marginBottom: "10px" }}} dangerouslySetInnerHTML={{ __html: msg.content }} />
+                      <Image src={ user.photoURL || defaultProfile } width={40} height={40} alt='Chatbot Icon' style={{ borderRadius: '100%', marginRight: "-20px", marginTop: 9, border: "2px solid black" }} />
                     )}
+                    <Box
+                      bgcolor={
+                        msg.role === 'assistant' ? '#2D2D2D' : '#C0C0C0'
+                      }
+                      color={
+                        msg.role === 'assistant' ? "white" : "black"
+                      }
+                      borderRadius={6}
+                      maxWidth={"575px"}
+                      p={2}
+                      marginRight={"25px"}
+                      marginLeft={"25px"}
+                      sx={{
+                        '& ol': {
+                          marginLeft: '5px',
+                          marginTop: '8px',
+                          marginBottom: '8px'
+                        },
+                        '& li': {
+                          marginBottom: '8px',
+                          marginTop: '8px',
+                          marginLeft: "28px"
+                        },
+                        '& p': {
+                          marginBottom: '8px',
+                          marginTop: '8px',
+                          marginLeft: "10px",
+                        },
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'flex-start',
+                      }}
+                    >
+                      {index === messages.length - 1 && isLoading ? (
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 2}}>
+                          <BouncingDots />
+                        </Box>
+                      ) : (
+                        <Box sx={{ '& br': { marginTop: "10px", marginBottom: "10px" }}} dangerouslySetInnerHTML={{ __html: msg.content }} />
+                      )}
+                    </Box>
                   </Box>
                 </Box>
               ))
             }
+            <div ref={messagesEndRef}></div>
           </Stack>
           <Stack 
             direction={"row"} 
@@ -251,10 +313,12 @@ export default function Home() {
               onClick={sendMessage}
               sx={{
                 width: "90px",
-                bgcolor: "#007BFF",
-                '&:hover': {
-                    backgroundColor: '#66B2FF',
-                },
+                bgcolor: "#2D2D2D",
+                boxShadow: "0 2px 4px rgba(255, 255, 255, 0.2)",
+                border: "1px solid white",
+                  '&:hover': {
+                    bgcolor: "#4B4B4B",
+                } 
                 
               }}
             >
