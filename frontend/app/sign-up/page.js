@@ -10,6 +10,8 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import WorkoutAI from "@/public/WorkoutAI Logo.png"
 import GoogleIcon from '@/public/google-icon.svg'
 import Image from "next/image";
+import LandingPage from "../../public/Auth Picture.webp";
+import Logo from "../../public/Logo.png"
 import Footer from "../components/Footer";
 
 export default function SignUp() {
@@ -74,52 +76,67 @@ export default function SignUp() {
 
     return (
         <Box
-            width={"100vw"}
-            minHeight="100vh"
-            display={"flex"}
-            flexDirection={"column"}
-            color={"white"}
+            sx={{
+            position: 'relative',
+            height: '100vh',
+            overflow: 'hidden',
+            backgroundColor: '#000', 
+            }}
         >
-            <Box 
-                textAlign={"center"}
-                text
-                width={"500px"}
-                height={"630px"}
-                gap={4}
-                display={"flex"}
-                flexDirection={"column"}
-                alignItems={"center"}
-                bgcolor={"#212122"}
-                color={"white"}
+            <Image
+            src={LandingPage}
+            alt="Landing Page Background"
+            layout="fill"
+            objectFit="cover"
+            priority
+            className='background'
+            />
+            <Box
                 sx={{
-                    boxShadow: '0px 4px 8px rgba(255, 255, 255, 0.2)',
-                    userSelect: "none",
-                    borderRadius: "8px",
-                    marginTop: "auto",
-                    marginLeft: "auto",
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                    zIndex: 1,
+                }}
+            />
+            <Box
+                bgcolor={"#212122"}
+                width={"900px"}
+                height={"100vh"}
+                gap={2}
+                sx={{
+                    position: 'absolute',
+                    top: 0,
+                    bottom: 0,
+                    right: 0,
+                    left: 0,
                     marginRight: "auto",
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexDirection: "column",
+                    color: 'white',
+                    zIndex: 1,
+                    opacity: 0.9
                 }}
             >
-                <Box
-                    display={"flex"}
-                    justifyContent={"center"}
-                    alignItems={"center"}
-                    height={"80px"}
-                    width={"500px"}
-                    bgcolor={"#007BFF"}
-                    borderRadius={"6px 6px 0 0"}
-                >
-                    <Image src={WorkoutAI} width={250} alt="WorkoutAI Logo" className="logo" /> 
+                <Box>
+                    <Image src={Logo} width={300} alt="" />
                 </Box>
-                <Typography variant="h4" marginTop={"-20px"} sx={{ fontWeight: "bold" }}>Sign Up</Typography>
+                <Typography variant="h4" sx={{ fontWeight: "bold", marginTop: "10px" }}>
+                    Sign Up
+                </Typography>
                 <TextField
                     label="Email"
                     variant="outlined"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     sx={{
+                        marginTop: "15px",
                         width: "400px",
-                        marginTop: "-10px",
                         "& .MuiInputLabel-root": {
                             color: "white",
                         },
@@ -138,7 +155,7 @@ export default function SignUp() {
                             },
                         },
                         "& .MuiInputLabel-outlined": {
-                            color: "white",
+                            color: "008080",
                             "&.Mui-focused": {
                                 color: "white",
                             },
@@ -147,11 +164,11 @@ export default function SignUp() {
                 />
                 <TextField
                     label="Password"
-                    type="password"
                     variant="outlined"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     sx={{
+                        marginTop: "10px",
                         width: "400px",
                         "& .MuiInputLabel-root": {
                             color: "white",
@@ -171,7 +188,7 @@ export default function SignUp() {
                             },
                         },
                         "& .MuiInputLabel-outlined": {
-                            color: "white",
+                            color: "008080",
                             "&.Mui-focused": {
                                 color: "white",
                             },
@@ -180,11 +197,11 @@ export default function SignUp() {
                 />
                 <TextField
                     label="Confirm Password"
-                    type="password"
                     variant="outlined"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     sx={{
+                        marginTop: "10px",
                         width: "400px",
                         "& .MuiInputLabel-root": {
                             color: "white",
@@ -204,49 +221,35 @@ export default function SignUp() {
                             },
                         },
                         "& .MuiInputLabel-outlined": {
-                            color: "white",
+                            color: "008080",
                             "&.Mui-focused": {
                                 color: "white",
                             },
                         },
                     }}
                 />
-                {error && 
-                    <Typography 
+                <Box width={"400px"} marginTop={"20px"} display={"flex"} justifyContent={"space-between"} alignItems={"center"}>
+                    <Link href={"/sign-in"} className="custom-link">
+                        Forget Password?
+                    </Link>
+                    <Button
+                        variant="contained"
+                        onClick={handleSignUp}
                         sx={{
-                            marginTop: "-20px",
-                            marginBottom: "-36px"
-                        }} 
-                        color="error"
+                            bgcolor: "#2D2D2D",
+                            '&:hover': {
+                                bgcolor: "#4B4B4B"
+                            },
+                        }}
                     >
-                        {error}
-                    </Typography>
-                }
-                <Button
-                    variant="contained"
-                    onClick={handleSignUp}
-                    sx={{
-                        bgcolor: "#007BFF",
-                        marginTop: "10px",
-                        '&:hover': {
-                            backgroundColor: '#66B2FF',
-                        },
-                    }}
-                >
-                    {processing ? "Signing Up..." : "Sign Up"}
-                </Button>
-                <Box
-                    display={'flex'}
-                    gap={1}
-                    marginTop={"-10px"}
-                >
-                    <Typography>Have an account?</Typography>
-                    <Link href={"/sign-in"} className="custom-link">Login with account</Link>
+                        {processing ? "Signing Up..." : "Sign Up"}
+                    </Button>
                 </Box>
                 <Divider 
                     sx={{ 
+                        marginTop: "5px",
+                        marginBottom: "5px",
                         width: '400px', 
-                        marginTop: "-15px", 
                         color: "white",
                         borderColor: "white",
                         "&::before, &::after": {
@@ -263,27 +266,36 @@ export default function SignUp() {
                 </Divider>
                 <Button
                     sx={{
-                        marginTop: "-15px",
-                        textTransform: "none",
-                        bgcolor: "#007BFF",
-                        '&:hover': {
-                            backgroundColor: '#66B2FF',
-                        },
-                    }}  
+                    textTransform: "none",
+                    bgcolor: "#2D2D2D",
+                    '&:hover': {
+                        bgcolor: "#4B4B4B"
+                    },
+                    width: "400px",
+                    marginTop: "5px"
+                }} 
                     variant="contained"
                     onClick={handleGoogle}
                 >
-                    <Box 
-                        display={"flex"}
-                        alignItems={"center"}
-                        gap={1}
-                    >
-                        <Image src={GoogleIcon} height={35} width={35} alt='' />
-                        <Typography>Sign Up with Google</Typography>
+                    <Box display={"flex"} width={"400px"} justifyContent={"space-between"} alignItems={"center"}>
+                        <Image src={GoogleIcon} height={35} width={35} alt="" />
+                        <Typography mr={14}>Sign in with Google</Typography>
                     </Box>
                 </Button>
+                <Box display={"flex"} alignItems={"center"} gap={1} marginTop={"15px"}>
+                    <Typography>Have an account?</Typography>
+                    <Link href={"/sign-in"} className="custom-link">
+                        Login with account
+                    </Link>
+                </Box>
+                <Box width="400px" display={"flex"} justifyContent={"center"} alignItems={"center"} height="24px" marginTop={"10px"}>
+                    {error && (
+                        <Typography color="error">
+                            {error}
+                        </Typography>
+                    )}
+                </Box>
             </Box>
-            <Footer />
-        </Box>
+      </Box>
     )
 }

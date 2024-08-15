@@ -14,13 +14,13 @@ body br {
 }
 
 .custom-link {
-  color: #007BFF; 
+  color: white; 
   text-decoration: none; 
   transition: color 0.3s, text-decoration 0.3s; 
 }
 
 .custom-link:hover {
-  color: #66B2FF;
+  color: #D3D3D3;
   text-decoration: underline; 
 }
 
@@ -38,5 +38,11 @@ body br {
 }
 
 .pointer {
-  cursor: pointer;
+  /* cursor: pointer; */
+  margin-right: auto;
+  
+}
+
+.background {
+  background-color: 'rgba(0, 0, 0, 0.3)',
 }
